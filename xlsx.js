@@ -593,7 +593,7 @@ const generateSheetAst = (sheet) => {
   let SheetData = [];
   /**
    * 生成行 格式如下
-   * <row r="1"></row>
+   * <row r="1" span="1:?"></row>
    */
   for(let i = 1;i <= r;i++) {
     let rowAst = { n: 'row', p: { r: i, spans: `1:${c}` }, c: [] };
