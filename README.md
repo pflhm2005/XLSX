@@ -42,7 +42,7 @@ XLSX.utils.book_append_sheet(wb, ws, "sheet12");
 XLSX.writeFile(wb, '测试.xlsx');
 ```
 
-*样式定制*
+####样式定制
 
 key|描述|type|可选值|默认值
 --|--|--|--|--
