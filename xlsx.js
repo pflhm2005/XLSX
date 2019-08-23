@@ -549,24 +549,6 @@ const generateThemeAst = () => {
   };
 };
 
-/**
- * SharedString的映射表
- */
-let uid = -1;
-let count = 0;
-let sharedStringMap = new Map();
-const LookOrInsert = (str) => {
-  count++;
-  let tar = sharedStringMap.get(str);
-  if(tar === undefined) {
-    uid++;
-    sharedStringMap.set(str, uid);
-    return uid;
-  } else {
-    return tar;
-  }
-}
-
 const columnToNum = str => str.split('').reduce((r, c) => {
   return r = r * 26 + (c.charCodeAt() - 64);
 }, 0);
@@ -575,62 +557,7 @@ const numToColumn = (n) => {
   for(++n;n;n = Math.floor((n - 1) / 26)) s = String.fromCharCode((n - 1) % 26 + 65) + s;
   return s;
 }
-const generateSheetAst = (sheet) => {
-  // 表格默认从A1开始 所以只计算后面的值
-  let range = 'A1';
-  if(sheet.ref) range = sheet.ref.split(':')[1];
-  let len = range.length, r = 0, c = 0;
-  // 计算得到数据的最大行列值
-  for(let i = 0;i < len;i++) {
-    let unicode = range.charCodeAt(i) - 64;
-    if(unicode < 0 || unicode > 26) {
-      c = columnToNum(range.slice(0, i));
-      r = Number(range.slice(i));
-      break;
-    }
-  }
-  // 描述表格数据的数组
-  let SheetData = [];
-  /**
-   * 生成行 格式如下
-   * <row r="1" span="1:?"></row>
-   */
-  for(let i = 1;i <= r;i++) {
-    let rowAst = { n: 'row', p: { r: i, spans: `1:${c}` }, c: [] };
-    let rowChildren = rowAst.c;
-    /**
-     * 生成列 内容插入row标签中
-     */
-    for(let j = 0;j < c;j++) {
-      let pos = `${numToColumn(j)}${i}`;
-      // 默认不生成值为null的单元格 好像也不会出问题
-      let cell = sheet[pos];
-      if(cell) {
-        let t = 's';
-        if(typeof cell.v === 'number') {
-          t = 'n';
-          rowChildren.push({ n: 'c', p: { r: pos, t }, c: [{ n: 'v', t: cell.v }] });
-        }  else {
-          let id = LookOrInsert(cell.v);
-          rowChildren.push({ n: 'c', p: { r: pos, t }, c: [{ n: 'v', t: id }] });
-        }
-      } else {
-        rowChildren.push({ n: 'c', p: { r: pos } });
-      }
-    }
-    SheetData.push(rowAst);
-  }
-  /**
-   * 处理单元格合并
-   */
-  let merge = sheet.merge || [];
-  let mergeAst = null;
-  if(merge.length) {
-    mergeAst = { n: 'mergeCells', p: { count: '0' }, c: [] };
-    let len = merge.length;
-    mergeAst.p.count = len;
-    mergeAst.c = merge.map(ref => { return { n: 'mergeCell', p: {ref} } });
-  }
+const generateSheetAst = (ref, SheetData, mergeAst) => {
   return {
     n: 'worksheet',
     p: {
@@ -646,7 +573,7 @@ const generateSheetAst = (sheet) => {
       'xr:uid': '{8791C6D8-650A-F64A-B18E-34BEF5B11F63}',
     },
     c: [
-      { n: 'dimension', p: { ref: sheet.ref || 'A1' } },
+      { n: 'dimension', p: { ref: ref || 'A1' } },
       { n: 'sheetViews', c:[
         { n: 'sheetView', p: { tabSelected: '1', workbookViewId: '0' } }
       ]},
@@ -660,16 +587,17 @@ const generateSheetAst = (sheet) => {
   };
 }
 
-const generateSharedStringAst = () => {
-  let c = [...sharedStringMap.keys()].map(t => {
+const generateSharedStringAst = (sharedStringMap) => {
+  let map = sharedStringMap.map;
+  let c = [...map.keys()].map(t => {
     return { n: 'si', c: [{ n: 't', t }] };
   });
   return { 
     n: 'sst', 
     p: { 
       xmlns: 'http://schemas.openxmlformats.org/spreadsheetml/2006/main',
-      count,
-      uniqueCount: sharedStringMap.size,
+      count: sharedStringMap.count,
+      uniqueCount: map.size,
     }, c };
 }
 
@@ -679,11 +607,7 @@ const generateSharedStringAst = () => {
 class XLSX {
   constructor() {
     this.a = document.createElement('a');
-  }
-  clearUp() {
-    uid = -1;
-    count = 0;
-    sharedStringMap.clear();
+    this.sharedStringMap = new SharedMap();
   }
   s2ab(s) {
     let buf = new ArrayBuffer(s.length);
@@ -717,7 +641,11 @@ class XLSX {
    */
   write(wb, opt = {}){
     let zip = this.write_zip(wb, opt);
-    this.clearUp();
+    /**
+     * 这里的样式可以考虑复用
+     * 字符串清空
+     */
+    this.sharedStringMap.cleanUp();
     return this.s2ab(zip.generate({ type: 'string' }));
     // return zip.generateAsync({type:'string'}).then(str => this.s2ab(str));
   }
@@ -783,18 +711,86 @@ class XLSX {
     for(let i = 0;i < SheetNames.length;i++) {
       let sheetPath = `xl/worksheets/sheet${i+1}.xml`;
       let sheetName = SheetNames[i];
-      zip.file(sheetPath, this.writeXml(generateSheetAst(wb.Sheets[sheetName])));
+      let { ref, SheetData, mergeAst } = this.processSheet(wb.Sheets[sheetName]);
+      zip.file(sheetPath, this.writeXml(generateSheetAst(ref, SheetData, mergeAst)));
     }
 
+    /**
+     * 字符串样式的xml依赖于sheet数据
+     * 必须放到最后
+     */
     // xl/styles.xml
     let styleXmlPath = 'xl/styles.xml';
     zip.file(styleXmlPath, this.writeXml(generateStyleAst()));
 
     // xl/sharedStrings.xml
     let sharedStringXmlPath = 'xl/sharedStrings.xml';
-    zip.file(sharedStringXmlPath, this.writeXml(generateSharedStringAst()))
+    zip.file(sharedStringXmlPath, this.writeXml(generateSharedStringAst(this.sharedStringMap)))
 
     return zip;
+  }
+  /**
+   * 处理SheetAst
+   */
+  processSheet(sheet) {
+    // 表格默认从A1开始 所以只计算后面的值
+    let range = 'A1';
+    if(sheet.ref) range = sheet.ref.split(':')[1];
+    let len = range.length, r = 0, c = 0;
+    // 计算得到数据的最大行列值
+    for(let i = 0;i < len;i++) {
+      let unicode = range.charCodeAt(i) - 64;
+      if(unicode < 0 || unicode > 26) {
+        c = columnToNum(range.slice(0, i));
+        r = Number(range.slice(i));
+        break;
+      }
+    }
+    // 描述表格数据的数组
+    let SheetData = [];
+    /**
+     * 生成行 格式如下
+     * <row r="1" span="1:?"></row>
+     */
+    for(let i = 1;i <= r;i++) {
+      let rowAst = { n: 'row', p: { r: i, spans: `1:${c}` }, c: [] };
+      let rowChildren = rowAst.c;
+      /**
+       * 生成列 内容插入row标签中
+       */
+      for(let j = 0;j < c;j++) {
+        let pos = `${numToColumn(j)}${i}`;
+        // 默认不生成值为null的单元格 好像也不会出问题
+        let cell = sheet[pos];
+        if(cell) {
+          let t = 's';
+          if(typeof cell.v === 'number') {
+            t = 'n';
+            rowChildren.push({ n: 'c', p: { r: pos, t }, c: [{ n: 'v', t: cell.v }] });
+          }  else {
+            let id = this.sharedStringMap.LookOrInsert(cell.v);
+            rowChildren.push({ n: 'c', p: { r: pos, t }, c: [{ n: 'v', t: id }] });
+          }
+        } else {
+          rowChildren.push({ n: 'c', p: { r: pos } });
+        }
+      }
+      SheetData.push(rowAst);
+    }
+
+    /**
+     * 处理单元格合并
+     */
+    let merge = sheet.merge || [];
+    let mergeAst = null;
+    if(merge.length) {
+      mergeAst = { n: 'mergeCells', p: { count: '0' }, c: [] };
+      let len = merge.length;
+      mergeAst.p.count = len;
+      mergeAst.c = merge.map(ref => { return { n: 'mergeCell', p: {ref} } });
+    }
+
+    return { ref: sheet.ref, SheetData, mergeAst };
   }
 }
 /**
@@ -814,10 +810,37 @@ const escapeHTML = (str) => {
   })
 }
 
+/**
+ * SharedXml的映射表
+ */
+class SharedMap {
+  constructor() {
+    this.uid = -1;
+    this.count = 0;
+    this.map = new Map();
+  }
+  LookOrInsert(str) {
+    this.count++;
+    let tar = this.map.get(str);
+    if(tar === undefined) {
+      this.uid++;
+      this.map.set(str, this.uid);
+      return this.uid;
+    } else {
+      return tar;
+    }
+  }
+  cleanUp() {
+    this.map.clear();
+    this.uid = -1;
+    this.count = 0;
+  }
+}
+
 let _XLSX = new XLSX();
 /**
- * 为了兼容xlsx插件 先暂时后面搞
- * 如果切换到自己写的 考虑弄到prototype上
+ * 为了兼容xlsx插件 先暂时这样
+ * 如果切换到自己写的 再考虑弄到prototype上
  */
 _XLSX.utils = {
   book_new() {
