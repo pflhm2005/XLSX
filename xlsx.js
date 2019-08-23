@@ -721,9 +721,9 @@ class XLSX {
   writeFile(wb, filename = "未命名.xlsx") {
     let blob = new Blob([this.write(wb)], { type: "application/octet-stream" });
     let url = URL.createObjectURL(blob);
-    a.href = url;
-    a.download = filename;
-    a.click();
+    this.a.href = url;
+    this.a.download = filename;
+    this.a.click();
     setTimeout(() => {
       URL.revokeObjectURL(url);
     }, 10000);

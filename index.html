@@ -14,11 +14,16 @@
 <script src="./xlsx.js"></script>
 <script>
   let wb = XLSX.utils.book_new();
-  let ws = XLSX.utils.aoa_to_sheet([[1, null, '机密'], [4, 5, 6]]);
+  let ws = XLSX.utils.aoa_to_sheet(
+    [
+      [1, null, '吉米'],
+      [4, 5, 6]
+    ]);
   ws.merge.push('A1:B1');
+  
   XLSX.utils.book_append_sheet(wb, ws, "sheet12");
 
-  XLSX.writeFile(wb, 'empty1.xlsx');
+  XLSX.writeFile(wb, '测试.xlsx');
 </script>
 
 </html>
