@@ -680,6 +680,11 @@ class XLSX {
   constructor() {
     this.a = document.createElement('a');
   }
+  clearUp() {
+    uid = -1;
+    count = 0;
+    sharedStringMap.clear();
+  }
   s2ab(s) {
     let buf = new ArrayBuffer(s.length);
     let view = new Uint8Array(buf);
@@ -712,12 +717,13 @@ class XLSX {
    */
   write(wb, opt = {}){
     let zip = this.write_zip(wb, opt);
-    uid = -1;
-    count = 0;
-    sharedStringMap.clear();
+    this.clearUp();
     return this.s2ab(zip.generate({ type: 'string' }));
     // return zip.generateAsync({type:'string'}).then(str => this.s2ab(str));
   }
+  /**
+   * 直接生成文件
+   */
   writeFile(wb, filename = "未命名.xlsx") {
     let blob = new Blob([this.write(wb)], { type: "application/octet-stream" });
     let url = URL.createObjectURL(blob);
