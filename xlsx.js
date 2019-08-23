@@ -1,3 +1,4 @@
+(function() {
 const XML_ROOT_HEADER = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 const generateAppAst = (SheetNames) => {
   let len = SheetNames.length;
@@ -672,7 +673,6 @@ const generateSharedStringAst = () => {
     }, c };
 }
 
-(function() {
 /**
  * excel导出类
  */

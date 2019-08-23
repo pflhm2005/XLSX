@@ -1,6 +1,5 @@
 (function() {
 
-
 const LOCAL_FILE_HEADER = "PK\x03\x04";
 const CENTRAL_FILE_HEADER = "PK\x01\x02";
 const CENTRAL_DIRECTORY_END = "PK\x05\x06";
