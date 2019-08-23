@@ -35,7 +35,7 @@ const generateAppAst = (SheetNames) => {
 };
 
 const generateCoreAst = () => {
-  let date = new Date().toISOString().replace(/\.\d*/,"");
+  let date = new Date().toISOString().replace(/\.\d*/, "");
   return {
     n: 'cp:coreProperties',
     p: {
@@ -703,11 +703,11 @@ class XLSX {
   }
   writeTag(o) {
     if(!o) return '';
-    let propertyString = '';
-    if(o.p) propertyString = Object.keys(o.p).map(key => ` ${key}="${o.p[key]}"`).join('');
-    if(o.t === undefined && !o.c) return `<${o.n}${propertyString}/>`;
-    else if(o.c !== undefined) return `<${o.n}${propertyString}>${(o.c || []).map(v => this.writeTag(v)).join('')}</${o.n}>`;
-    else return `<${o.n}${propertyString}>${o.t}</${o.n}>`;
+    let properties = '';
+    if(o.p) properties = Object.keys(o.p).map(key => ` ${key}="${o.p[key]}"`).join('');
+    if(o.t === undefined && !o.c) return `<${o.n}${properties}/>`;
+    else if(o.c !== undefined) return `<${o.n}${properties}>${(o.c || []).map(v => this.writeTag(v)).join('')}</${o.n}>`;
+    else return `<${o.n}${properties}>${o.t}</${o.n}>`;
   }
   writeXml(content) {
     return `${XML_ROOT_HEADER}${this.writeTag(content)}`;
@@ -775,10 +775,6 @@ class XLSX {
     let ctXmlPath = '[Content_Types].xml';
     zip.file(ctXmlPath,this.writeXml(generateCtAst(SheetNames)));
 
-    // xl/styles.xml
-    let styleXmlPath = 'xl/styles.xml';
-    zip.file(styleXmlPath, this.writeXml(generateStyleAst()));
-
     // xl/theme/theme1.xml
     let themeXmlPath = 'xl/theme/theme1.xml';
     zip.file(themeXmlPath, this.writeXml(generateThemeAst()));
@@ -789,6 +785,10 @@ class XLSX {
       let sheetName = SheetNames[i];
       zip.file(sheetPath, this.writeXml(generateSheetAst(wb.Sheets[sheetName])));
     }
+
+    // xl/styles.xml
+    let styleXmlPath = 'xl/styles.xml';
+    zip.file(styleXmlPath, this.writeXml(generateStyleAst()));
 
     // xl/sharedStrings.xml
     let sharedStringXmlPath = 'xl/sharedStrings.xml';
