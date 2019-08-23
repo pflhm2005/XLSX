@@ -627,7 +627,8 @@ class XLSX {
       verticalAlign: 'top'
     };
     // 合法值
-    this.alignDirction = ['left', 'top', 'right', 'bottom'];
+    this.verticalDirction = ['top', 'bottom', 'center'];
+    this.horizontalDirction = ['left', 'right', 'center'];
     // 样式映射表 有一个默认值
     this.defaultCellXfsAst = JSON.stringify(generatecellXfsAst(0));
     this.cellXfsMap = new Map([[this.defaultCellXfsAst, 0]]);
@@ -871,8 +872,8 @@ class XLSX {
   }
   LookOrInsertStyleMap(fontId, style) {
     let { textAlign, verticalAlign } = style;
-    if(!this.alignDirction.includes(textAlign)) textAlign = 'left';
-    if(!this.alignDirction.includes(verticalAlign)) verticalAlign = 'top';
+    if(!this.horizontalDirction.includes(textAlign)) textAlign = 'left';
+    if(!this.verticalDirction.includes(verticalAlign)) verticalAlign = 'top';
     let cellXfsAst = generatecellXfsAst(fontId, textAlign, verticalAlign);
     return this.LookOrInsert(this.cellXfsMap, cellXfsAst, 'cellXfsUid');
   }
