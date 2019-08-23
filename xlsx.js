@@ -712,7 +712,7 @@ class XLSX {
    */
   write(wb, opt = {}){
     let zip = this.write_zip(wb, opt);
-    uid = 0;
+    uid = -1;
     count = 0;
     sharedStringMap.clear();
     return this.s2ab(zip.generate({ type: 'string' }));
