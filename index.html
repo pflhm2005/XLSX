@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Document</title>
+</head>
+
+<body>
+</body>
+<script src="./jszip.js"></script>
+<script src="./xlsx.js"></script>
+<script>
+  let wb = XLSX.utils.book_new();
+  let ws = XLSX.utils.aoa_to_sheet([[1, null, '机密'], [4, 5, 6]]);
+  ws.merge.push('A1:B1');
+  XLSX.utils.book_append_sheet(wb, ws, "sheet12");
+
+  XLSX.writeFile(wb, 'empty1.xlsx');
+</script>
+
+</html>
