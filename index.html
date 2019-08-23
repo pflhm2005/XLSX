@@ -10,11 +10,10 @@
 
 <body>
 </body>
-<script src="./jszip.js"></script>
-<script src="./xlsx.js"></script>
+<script src="./dist.min.js"></script>
 <script>
-  let wb = XLSX.utils.book_new();
-  let ws = XLSX.utils.aoa_to_sheet(
+  let wb = XLSX.book_new();
+  let ws = XLSX.aoa_to_sheet(
     [
       [1, null, '吉米'],
       [4, 5, 6]
@@ -35,7 +34,7 @@
     verticalAlign: 'bottom',
   };
   
-  XLSX.utils.book_append_sheet(wb, ws, "测试sheet");
+  XLSX.book_append_sheet(wb, ws, "测试sheet");
   XLSX.writeFile(wb, '测试.xlsx');
 </script>
 
