@@ -615,8 +615,8 @@ class XLSX {
     this.sharedStringTotal = 0;
     this.sharedStringMap = new Map();
     // 字体映射表 有一个默认值
-    this.defaultFontAst = JSON.stringify(generatefontAst('等线', 12, null));
-    this.fontMap = new Map([[this.defaultFontAst, 0]]);
+    this.defaultFontAst = generatefontAst('等线', 12, null);
+    this.fontMap = new Map([[JSON.stringify(this.defaultFontAst), 0]]);
     this.fontUid = 0;
     // 单元格的默认样式
     this.defaultStyle = {
@@ -630,20 +630,19 @@ class XLSX {
     this.verticalDirction = ['top', 'bottom', 'center'];
     this.horizontalDirction = ['left', 'right', 'center'];
     // 样式映射表 有一个默认值
-    this.defaultCellXfsAst = JSON.stringify(generatecellXfsAst(0));
-    this.cellXfsMap = new Map([[this.defaultCellXfsAst, 0]]);
+    this.defaultCellXfsAst = generatecellXfsAst(0);
+    this.cellXfsMap = new Map([[JSON.stringify(this.defaultCellXfsAst), 0]]);
     this.cellXfsUid = 0;
   }
+  /**
+   * 只对字符串的映射表做重置
+   * 由于字体样式重合度较高 直接复用
+   * TODO 可能字符串的重合度也较高 这个方法直接废弃
+   */
   cleanUp() {
     this.sharedStringUid = -1;
     this.sharedStringTotal = 0;
     this.sharedStringMap.clear();
-
-    this.fontMap = new Map([[this.defaultFontAst, 0]]);
-    this.fontUid = 0;
-
-    this.cellXfsMap = new Map([[this.defaultCellXfsAst, 0]]);
-    this.cellXfsUid = 0;
   }
   s2ab(s) {
     let buf = new ArrayBuffer(s.length);
@@ -681,7 +680,7 @@ class XLSX {
      * 这里的样式可以考虑复用
      * 字符串清空
      */
-    // this.cleanUp();
+    this.cleanUp();
     return this.s2ab(zip.generate({ type: 'string' }));
     // return zip.generateAsync({type:'string'}).then(str => this.s2ab(str));
   }
