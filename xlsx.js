@@ -169,7 +169,34 @@ const generateWorkBookAst = (SheetNames) => {
   }
 };
 
-const generateStyleAst = () => {
+const generatefontAst = (ff, fz, fw) => {
+  return {
+    n: 'font', c: [
+      fw === 'bold' ? { n: 'b' } : null,
+      { n: 'sz', p: { val: fz } },
+      { n: 'name', p: { val: ff } },
+      { n: 'family', p: { val: 2 } },
+      { n: 'charset', p: { val: 134 } },
+    ]
+  };
+}
+
+const generatecellXfsAst = (fontId, horizontal = 'left', vertical = 'center') => {
+  return {
+    n: 'xf', p: { 
+      numFmtId: '0', 
+      fontId, fillId: '0', 
+      borderId: '0', 
+      xfId: '0', 
+      applyFont: '1',
+      applyAlignment: '1',
+    }, c: [{ n: 'alignment', p: { vertical, horizontal } }]
+  };
+}
+
+const generateStyleAst = (fontMap, cellXfsMap) => {
+  // console.log([...fontMap.keys()]);
+  // console.log(...styleMap.keys());
   return {
     n: 'styleSheet',
     p: {
@@ -181,27 +208,14 @@ const generateStyleAst = () => {
       'xmlns:xr': 'http://schemas.microsoft.com/office/spreadsheetml/2014/revision'
     },
     c: [
-      { n: 'fonts', p: { count: '2' }, c: [
-        { n: 'font', c: [
-          { n: 'sz', p: { val: '12' } },
-          { n: 'color', p: { theme: '1' } },
-          { n: 'name', p: { val: '等线' } },
-          { n: 'family', p: { val: '2' } },
-          { n: 'charset', p: { val: '134' } },
-          { n: 'scheme', p: { val: 'minor' } },
-        ]},
-        { n: 'font', c: [
-          { n: 'sz', p: { val: '9' } },
-          { n: 'name', p: { val: '等线' } },
-          { n: 'family', p: { val: '2' } },
-          { n: 'charset', p: { val: '134' } },
-          { n: 'scheme', p: { val: 'minor' } },
-        ]}]
-      },
+      // 字体表
+      { n: 'fonts', p: { count: fontMap.size }, c: [...fontMap.keys()] },
+      // 填充表 默认不填充
       { n: 'fills', p: { count: '2' },c: [
         { n: 'fill', c: [{ n: 'patternFill', p: { patternType: 'none' } }] },
         { n: 'fill', c: [{ n: 'patternFill', p: { patternType: 'gray125' } }] }]
       },
+      // 边框表
       { n:'borders', p: { count: '1' }, c: [
         { n: 'border', c: [
           { n: 'left' },
@@ -211,6 +225,7 @@ const generateStyleAst = () => {
           { n: 'diagonal' },
         ]}]
       },
+      // 
       { n: 'cellStyleXfs', p: { count: '1' }, c: [
         {
           n: 'xf', 
@@ -223,20 +238,8 @@ const generateStyleAst = () => {
           c: [{ n:'alignment', p:{ vertical: 'center' } }]
         }]
       },
-      { n: 'cellXfs', p: { count: '1' }, c: [
-        { 
-          n: 'xf', 
-          p: {
-            numFmtId: '0',
-            fontId: '0',
-            fillId: '0',
-            borderId: '0',
-            xfId: "0",
-            applyAlignment: '1',
-          },
-          c: [{ n:'alignment', p:{ vertical: 'center', horizontal: 'center' } }]
-        }]
-      },
+      // 单元格映射表 至少有一个默认值
+      { n: 'cellXfs', p: { count: cellXfsMap.size }, c: [...cellXfsMap.keys()] },
       { n: 'cellStyles', p: { count: '1' }, c: [
         {
           n: 'cellStyle', 
@@ -587,8 +590,7 @@ const generateSheetAst = (ref, SheetData, mergeAst) => {
   };
 }
 
-const generateSharedStringAst = (sharedStringMap) => {
-  let map = sharedStringMap.map;
+const generateSharedStringAst = (map, count) => {
   let c = [...map.keys()].map(t => {
     return { n: 'si', c: [{ n: 't', t }] };
   });
@@ -596,7 +598,7 @@ const generateSharedStringAst = (sharedStringMap) => {
     n: 'sst', 
     p: { 
       xmlns: 'http://schemas.openxmlformats.org/spreadsheetml/2006/main',
-      count: sharedStringMap.count,
+      count,
       uniqueCount: map.size,
     }, c };
 }
@@ -607,7 +609,42 @@ const generateSharedStringAst = (sharedStringMap) => {
 class XLSX {
   constructor() {
     this.a = document.createElement('a');
-    this.sharedStringMap = new SharedMap();
+    /**
+     * sharedStringMap映射表
+     * 每次导出后需要做重置
+     */
+    this.sharedStringUid = -1;
+    this.sharedStringTotal = 0;
+    this.sharedStringMap = new Map();
+    // 字体映射表 有一个默认值
+    this.defaultFontAst = generatefontAst('等线', 12, null);
+    this.fontMap = new Map([[this.defaultFontAst, 0]]);
+    this.fontUid = 0;
+    // 单元格的默认样式
+    this.defaultStyle = {
+      fontFamily: '等线',
+      fontSize: 12,
+      fontWeight: 'normal',
+      textAlign: 'left',
+      verticalAlign: 'top'
+    };
+    // 合法值
+    this.alignDirction = ['left', 'top', 'right', 'bottom'];
+    // 样式映射表 有一个默认值
+    this.defaultCellXfsAst = generatecellXfsAst(0);
+    this.cellXfsMap = new Map([[this.defaultCellXfsAst, 0]]);
+    this.cellXfsUid = 0;
+  }
+  cleanUp() {
+    this.sharedStringUid = -1;
+    this.sharedStringTotal = 0;
+    this.sharedStringMap.clear();
+
+    this.fontMap = new Map([[this.defaultFontAst, 0]]);
+    this.fontUid = 0;
+
+    this.cellXfsMap = new Map([[this.defaultCellXfsAst, 0]]);
+    this.cellXfsUid = 0;
   }
   s2ab(s) {
     let buf = new ArrayBuffer(s.length);
@@ -645,7 +682,7 @@ class XLSX {
      * 这里的样式可以考虑复用
      * 字符串清空
      */
-    this.sharedStringMap.cleanUp();
+    this.cleanUp();
     return this.s2ab(zip.generate({ type: 'string' }));
     // return zip.generateAsync({type:'string'}).then(str => this.s2ab(str));
   }
@@ -711,31 +748,33 @@ class XLSX {
     for(let i = 0;i < SheetNames.length;i++) {
       let sheetPath = `xl/worksheets/sheet${i+1}.xml`;
       let sheetName = SheetNames[i];
-      let { ref, SheetData, mergeAst } = this.processSheet(wb.Sheets[sheetName]);
+      let { ref, SheetData, mergeAst } = this.parseSheet(wb.Sheets[sheetName]);
       zip.file(sheetPath, this.writeXml(generateSheetAst(ref, SheetData, mergeAst)));
     }
 
     /**
-     * 字符串样式的xml依赖于sheet数据
+     * 字符串与样式的xml依赖于map
      * 必须放到最后
      */
     // xl/styles.xml
     let styleXmlPath = 'xl/styles.xml';
-    zip.file(styleXmlPath, this.writeXml(generateStyleAst()));
+    zip.file(styleXmlPath, this.writeXml(generateStyleAst(this.fontMap, this.cellXfsMap)));
 
     // xl/sharedStrings.xml
     let sharedStringXmlPath = 'xl/sharedStrings.xml';
-    zip.file(sharedStringXmlPath, this.writeXml(generateSharedStringAst(this.sharedStringMap)))
+    zip.file(sharedStringXmlPath, this.writeXml(generateSharedStringAst(this.sharedStringMap, this.sharedStringTotal)))
 
     return zip;
   }
   /**
    * 处理SheetAst
+   * 由于这里会同时生成style与string的映射map 
+   * 放到原型方法上处理
    */
-  processSheet(sheet) {
+  parseSheet(sheet) {
     // 表格默认从A1开始 所以只计算后面的值
-    let range = 'A1';
-    if(sheet.ref) range = sheet.ref.split(':')[1];
+    let ref = sheet.ref || 'A1:A1';
+    let range = ref.split(':')[1];
     let len = range.length, r = 0, c = 0;
     // 计算得到数据的最大行列值
     for(let i = 0;i < len;i++) {
@@ -763,21 +802,24 @@ class XLSX {
         // 默认不生成值为null的单元格 好像也不会出问题
         let cell = sheet[pos];
         if(cell) {
-          let t = 's';
-          if(typeof cell.v === 'number') {
-            t = 'n';
-            rowChildren.push({ n: 'c', p: { r: pos, t }, c: [{ n: 'v', t: cell.v }] });
-          }  else {
-            let id = this.sharedStringMap.LookOrInsert(cell.v);
-            rowChildren.push({ n: 'c', p: { r: pos, t }, c: [{ n: 'v', t: id }] });
-          }
+          let s = 0;
+          if(cell.s) s = this.parseStyle(cell.s);
+          let val = cell.v;
+          /**
+           * warning 
+           * 当数据类型与t属性不同步时 文档会报错
+           * 然而生成sharedString后 插入值都是数字
+           * 因此必须区分类型
+           */
+          let t = typeof val === 'number' ? 'n' : 's';
+          if(t === 's') val = this.LookOrInsertStringMap(cell.v);
+          rowChildren.push({ n: 'c', p: { r: pos, t, s }, c: [{ n: 'v', t: val }] });
         } else {
           rowChildren.push({ n: 'c', p: { r: pos } });
         }
       }
       SheetData.push(rowAst);
     }
-
     /**
      * 处理单元格合并
      */
@@ -790,7 +832,46 @@ class XLSX {
       mergeAst.c = merge.map(ref => { return { n: 'mergeCell', p: {ref} } });
     }
 
-    return { ref: sheet.ref, SheetData, mergeAst };
+    return { ref, SheetData, mergeAst };
+  }
+  LookOrInsert(map, key, val) {
+    let tar = map.get(key);
+    if(tar === undefined) {
+      this[val]++;
+      map.set(key, this[val]);
+      return this[val];
+    } else {
+      return tar;
+    }
+  }
+  LookOrInsertStringMap(val) {
+    this.sharedStringTotal++;
+    return this.LookOrInsert(this.sharedStringMap, val, 'sharedStringUid');
+  }
+  /**
+   * 处理样式映射表
+   * 同时返回对应的styleId 默认样式id为0
+   * 具体的Ast生成交给generate
+   */
+  parseStyle(style) {
+    /**
+     * 需要给默认值
+     */
+    style = Object.assign({}, this.defaultStyle, style);
+    let fontId = this.LookOrInsertFontMap(style);
+    return this.LookOrInsertStyleMap(fontId, style);
+  }
+  LookOrInsertFontMap(style) {
+    let { fontFamily, fontSize, fontWeight } = style;
+    let fontAst = generatefontAst(fontFamily, fontSize, fontWeight);
+    return this.LookOrInsert(this.fontMap, fontAst, 'fontUid');
+  }
+  LookOrInsertStyleMap(fontId, style) {
+    let { textAlign, verticalAlign } = style;
+    if(!this.alignDirction.includes(textAlign)) textAlign = 'left';
+    if(!this.alignDirction.includes(verticalAlign)) verticalAlign = 'top';
+    let cellXfsAst = generatecellXfsAst(fontId, textAlign, verticalAlign);
+    return this.LookOrInsert(this.cellXfsMap, cellXfsAst, 'cellXfsUid');
   }
 }
 /**
@@ -808,33 +889,6 @@ const escapeHTML = (str) => {
       case "\"": return "&quot;"; 
     };
   })
-}
-
-/**
- * SharedXml的映射表
- */
-class SharedMap {
-  constructor() {
-    this.uid = -1;
-    this.count = 0;
-    this.map = new Map();
-  }
-  LookOrInsert(str) {
-    this.count++;
-    let tar = this.map.get(str);
-    if(tar === undefined) {
-      this.uid++;
-      this.map.set(str, this.uid);
-      return this.uid;
-    } else {
-      return tar;
-    }
-  }
-  cleanUp() {
-    this.map.clear();
-    this.uid = -1;
-    this.count = 0;
-  }
 }
 
 let _XLSX = new XLSX();

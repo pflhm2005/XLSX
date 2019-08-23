@@ -20,6 +20,16 @@ let ws = XLSX.utils.aoa_to_sheet(
   ]
 );
 /**
+ * 设置单元格的样式
+ */
+ws.A1.s = {
+  fontSize: 14,
+  fontWeight: 'bold',
+  fontFamily: '微软雅黑',
+  textAlign: 'center',
+  verticalAlign: 'center',
+};
+/**
  * 设置合并的单元格
  */
 ws.merge.push('A1:B1');
@@ -32,3 +42,13 @@ XLSX.utils.book_append_sheet(wb, ws, "sheet12");
  */
 XLSX.writeFile(wb, '测试.xlsx');
 ```
+
+*样式定制*
+
+key|描述|type|可选值|默认值
+--|--|--|--|--
+fontSize|字体大小|Number|--|12
+fontWeight|是否加粗|String|normal,bold|normal
+fontFamily|字体类型|String|等线,微软雅黑(尽量不要传其他类型)|等线
+textAlign|水平对齐|String|left,top,right,bottom|left
+verticalAlign|垂直对齐|String|left,top,right,bottom|top

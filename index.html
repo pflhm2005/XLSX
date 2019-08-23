@@ -20,9 +20,15 @@
       [4, 5, 6]
     ]);
   ws.merge.push('A1:B1');
+  ws.A1.s = {
+    fontSize: 14,
+    fontWeight: 'bold',
+    fontFamily: '微软雅黑',
+    textAlign: 'center',
+    verticalAlign: 'center',
+  };
   
-  XLSX.utils.book_append_sheet(wb, ws, "sheet12");
-
+  XLSX.utils.book_append_sheet(wb, ws, "测试sheet");
   XLSX.writeFile(wb, '测试.xlsx');
 </script>
 
