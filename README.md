@@ -29,6 +29,11 @@ ws.A1.s = {
   textAlign: 'center',
   verticalAlign: 'center',
 };
+ws.C1.s = {
+  fontSize: 12,
+  textAlign: 'right',
+  verticalAlign: 'bottom',
+};
 /**
  * 设置合并的单元格
  */
@@ -50,5 +55,5 @@ key|描述|type|可选值|默认值
 fontSize|字体大小|Number|--|12
 fontWeight|是否加粗|String|normal,bold|normal
 fontFamily|字体类型|String|等线,微软雅黑(尽量不要传其他类型)|等线
-textAlign|水平对齐|String|left,top,right,bottom|left
-verticalAlign|垂直对齐|String|left,top,right,bottom|top
+textAlign|水平对齐|String|left,right,center|left
+verticalAlign|垂直对齐|String|top,bottom,center|top

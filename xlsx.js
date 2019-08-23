@@ -195,8 +195,6 @@ const generatecellXfsAst = (fontId, horizontal = 'left', vertical = 'center') =>
 }
 
 const generateStyleAst = (fontMap, cellXfsMap) => {
-  // console.log([...fontMap.keys()]);
-  // console.log(...styleMap.keys());
   return {
     n: 'styleSheet',
     p: {
@@ -209,7 +207,7 @@ const generateStyleAst = (fontMap, cellXfsMap) => {
     },
     c: [
       // 字体表
-      { n: 'fonts', p: { count: fontMap.size }, c: [...fontMap.keys()] },
+      { n: 'fonts', p: { count: fontMap.size }, c: [...fontMap.keys()].map(ast => JSON.parse(ast)) },
       // 填充表 默认不填充
       { n: 'fills', p: { count: '2' },c: [
         { n: 'fill', c: [{ n: 'patternFill', p: { patternType: 'none' } }] },
@@ -239,7 +237,7 @@ const generateStyleAst = (fontMap, cellXfsMap) => {
         }]
       },
       // 单元格映射表 至少有一个默认值
-      { n: 'cellXfs', p: { count: cellXfsMap.size }, c: [...cellXfsMap.keys()] },
+      { n: 'cellXfs', p: { count: cellXfsMap.size }, c: [...cellXfsMap.keys()].map(ast => JSON.parse(ast)) },
       { n: 'cellStyles', p: { count: '1' }, c: [
         {
           n: 'cellStyle', 
@@ -617,7 +615,7 @@ class XLSX {
     this.sharedStringTotal = 0;
     this.sharedStringMap = new Map();
     // 字体映射表 有一个默认值
-    this.defaultFontAst = generatefontAst('等线', 12, null);
+    this.defaultFontAst = JSON.stringify(generatefontAst('等线', 12, null));
     this.fontMap = new Map([[this.defaultFontAst, 0]]);
     this.fontUid = 0;
     // 单元格的默认样式
@@ -631,7 +629,7 @@ class XLSX {
     // 合法值
     this.alignDirction = ['left', 'top', 'right', 'bottom'];
     // 样式映射表 有一个默认值
-    this.defaultCellXfsAst = generatecellXfsAst(0);
+    this.defaultCellXfsAst = JSON.stringify(generatecellXfsAst(0));
     this.cellXfsMap = new Map([[this.defaultCellXfsAst, 0]]);
     this.cellXfsUid = 0;
   }
@@ -682,7 +680,7 @@ class XLSX {
      * 这里的样式可以考虑复用
      * 字符串清空
      */
-    this.cleanUp();
+    // this.cleanUp();
     return this.s2ab(zip.generate({ type: 'string' }));
     // return zip.generateAsync({type:'string'}).then(str => this.s2ab(str));
   }
@@ -834,7 +832,12 @@ class XLSX {
 
     return { ref, SheetData, mergeAst };
   }
-  LookOrInsert(map, key, val) {
+  /**
+   * 不同的对象并不相等
+   * 这里直接转换为JSON字符串插入到map中
+   */
+  LookOrInsert(map, key, val, serialize = true) {
+    if(serialize) key = JSON.stringify(key);
     let tar = map.get(key);
     if(tar === undefined) {
       this[val]++;
@@ -846,7 +849,7 @@ class XLSX {
   }
   LookOrInsertStringMap(val) {
     this.sharedStringTotal++;
-    return this.LookOrInsert(this.sharedStringMap, val, 'sharedStringUid');
+    return this.LookOrInsert(this.sharedStringMap, val, 'sharedStringUid', false);
   }
   /**
    * 处理样式映射表

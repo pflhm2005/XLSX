@@ -27,6 +27,13 @@
     textAlign: 'center',
     verticalAlign: 'center',
   };
+  ws.C1.s = {
+    fontSize: 12,
+    fontWeight: 'bold',
+    fontFamily: '微软雅黑',
+    textAlign: 'right',
+    verticalAlign: 'bottom',
+  };
   
   XLSX.utils.book_append_sheet(wb, ws, "测试sheet");
   XLSX.writeFile(wb, '测试.xlsx');
