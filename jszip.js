@@ -445,7 +445,7 @@ class Writer {
     if(this.isString) this.data = [];
     else {
       this.index = 0;
-      this.data = new Uint8ArrayWriter(len);
+      this.data = new Uint8Array(len);
     }
   }
   append(input) {
