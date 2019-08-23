@@ -19,7 +19,7 @@ let ws = XLSX.utils.aoa_to_sheet(
   ]
 );
 /**
- * 设置单元格的样式
+ * 设置A1单元格的样式
  */
 ws.A1.s = {
   fontSize: 14,
@@ -51,3 +51,4 @@ fontWeight|是否加粗|String|normal,bold|normal
 fontFamily|字体类型|String|等线,微软雅黑(尽量不要传其他类型)|等线
 textAlign|水平对齐|String|left,top,right,bottom|left
 verticalAlign|垂直对齐|String|left,top,right,bottom|top
+其他样式基本也不会用到，就不搞了
