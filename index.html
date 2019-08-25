@@ -10,33 +10,34 @@
 
 <body>
 </body>
-<script src="./docx.min.js"></script>
 <script src="./dist.min.js"></script>
 <script>
-  // let wb = XLSX.book_new();
-  // let ws = XLSX.aoa_to_sheet(
-  //   [
-  //     [1, null, '吉米'],
-  //     [4, 5, 6]
-  //   ]);
-  // ws.merge.push('A1:B1');
-  // ws.A1.s = {
-  //   fontSize: 14,
-  //   fontWeight: 'bold',
-  //   fontFamily: '微软雅黑',
-  //   textAlign: 'center',
-  //   verticalAlign: 'center',
-  // };
-  // ws.C1.s = {
-  //   fontSize: 12,
-  //   fontWeight: 'bold',
-  //   fontFamily: '微软雅黑',
-  //   textAlign: 'right',
-  //   verticalAlign: 'bottom',
-  // };
+  let XLSX = Office.XLSX;
+  let DOCX = Office.DOCX;
+  let wb = XLSX.book_new();
+  let ws = XLSX.aoa_to_sheet(
+    [
+      [1, null, '吉米'],
+      [4, 5, 6]
+    ]);
+  ws.merge.push('A1:B1');
+  ws.A1.s = {
+    fontSize: 14,
+    fontWeight: 'bold',
+    fontFamily: '微软雅黑',
+    textAlign: 'center',
+    verticalAlign: 'center',
+  };
+  ws.C1.s = {
+    fontSize: 12,
+    fontWeight: 'bold',
+    fontFamily: '微软雅黑',
+    textAlign: 'right',
+    verticalAlign: 'bottom',
+  };
   
-  // XLSX.book_append_sheet(wb, ws, "测试sheet");
-  // XLSX.writeFile(wb, '测试.xlsx');
+  XLSX.book_append_sheet(wb, ws, "测试sheet");
+  XLSX.writeFile(wb, '测试.xlsx');
   DOCX.writeFile(null, 'empty.docx');
 </script>
 

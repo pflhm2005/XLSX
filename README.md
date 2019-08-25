@@ -5,6 +5,8 @@
 
 使用方法如下
 ```js
+// 在测试导出word
+let XLSX = Office.XLSX;
 /**
  * 生成一个新的workbook
  */
