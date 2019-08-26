@@ -12,6 +12,8 @@
 </body>
 <script src="./dist.min.js"></script>
 <script>
+  let XLSX = Office.XLSX;
+  let DOCX = Office.DOCX;
   let wb = XLSX.book_new();
   let ws = XLSX.aoa_to_sheet(
     [
@@ -33,9 +35,21 @@
     textAlign: 'right',
     verticalAlign: 'bottom',
   };
-  
   XLSX.book_append_sheet(wb, ws, "测试sheet");
-  XLSX.writeFile(wb, '测试.xlsx');
+  XLSX.writeFile(wb, 'excel.xlsx');
+
+  let ast = [
+    { t: '测 试', p: { textAlign: 'center', fontSize: 32, fontWeight: 'bold' } },
+    'br',
+    { t: '这是开头：', p: { fontWeight: 'bold' } },
+    { t: '\t这是带了一个tab的段落'},
+    [
+      ['吉米', null, null],
+      [1,'是',3],
+      [4,'傻逼',6],
+    ]
+  ];
+  DOCX.writeFile(ast, 'word.docx');
 </script>
 
 </html>
