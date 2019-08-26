@@ -2,6 +2,8 @@
 实现纯前端Excel、Word的导出，支持简单的单元格样式定制
 
 使用方法如下
+
+#### 导出Excel
 ```js
 let XLSX = Office.XLSX;
 /**
@@ -44,10 +46,13 @@ XLSX.book_append_sheet(wb, ws, "sheet12");
  * 生成Excel文件
  */
 XLSX.writeFile(wb, '测试.xlsx');
+```
 
+#### 导出Word
+```js
 let DOCX = Office.DOCX;
 /**
- * 生成docx的抽象语法树
+ * 生成描述docx的抽象语法树
  */
 let ast = [
   { t: '测 试', p: { textAlign: 'center', fontSize: 32, fontWeight: 'bold' } },
@@ -62,6 +67,8 @@ let ast = [
 ];
 DOCX.writeFile(ast, 'word.docx');
 ```
+
+
 ### 导出Excel文档
 
 #### 样式定制
@@ -70,7 +77,7 @@ key|描述|type|可选值|默认值
 --|--|--|--|--
 fontSize|字体大小|Number|--|12
 fontWeight|是否加粗|String|normal,bold|normal
-fontFamily|字体类型|String|等线,微软雅黑(尽量不要传其他类型)|等线
+fontFamily|字体类型|String|等线,微软雅黑(还支持一些其他值)|等线
 textAlign|水平对齐|String|left,right,center|left
 verticalAlign|垂直对齐|String|top,bottom,center|top
 
@@ -108,7 +115,7 @@ p|Object|段落的样式，可选值为textAlign、fontSize、fontWeight，解�
 
 > TODO 目前对单元格的样式稍未支持 后续将更新(优先支持对整行的样式定制) API如下
 
-```javascript
+```js
 let tableAst = [
   [1, 2, 3],
   [4, 5, 6]
