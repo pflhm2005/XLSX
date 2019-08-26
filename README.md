@@ -1,11 +1,8 @@
 # xlsx
-实现纯前端Excel的导出
-
-目前支持简单的单元格样式定制 后期考虑做word文档的导出
+实现纯前端Excel、Word的导出，支持简单的单元格样式定制
 
 使用方法如下
 ```js
-// 在测试导出word
 let XLSX = Office.XLSX;
 /**
  * 生成一个新的workbook
@@ -47,7 +44,25 @@ XLSX.book_append_sheet(wb, ws, "sheet12");
  * 生成Excel文件
  */
 XLSX.writeFile(wb, '测试.xlsx');
+
+let DOCX = Office.DOCX;
+/**
+ * 生成docx的抽象语法树
+ */
+let ast = [
+  { t: '测 试', p: { textAlign: 'center', fontSize: 32, fontWeight: 'bold' } },
+  'br',
+  { t: '这是开头：', p: { fontWeight: 'bold' } },
+  { t: '\t这是带了一个tab的段落'},
+  [
+    ['吉米', null, null],
+    [1,'是',3],
+    [4,'傻逼',6],
+  ]
+];
+DOCX.writeFile(ast, 'word.docx');
 ```
+### 导出Excel文档
 
 #### 样式定制
 
@@ -60,3 +75,46 @@ textAlign|水平对齐|String|left,right,center|left
 verticalAlign|垂直对齐|String|top,bottom,center|top
 
 其他样式基本也不会用到，就不搞了
+
+---
+### 导出word文档
+
+目前仅支持AST数组的参数，后续扩展对DOM转换的支持
+
+#### AST
+
+type|描述|可选值
+--|--|--
+String|特定格式的描述，目前仅支持空行|br
+Object|段落的抽象语法树|见下面
+Array|Table的二维数组|见下面
+
+##### Object
+
+> 表示一个普通文本
+
+key|type|描述
+--|--|--
+t|String|段落的文本，若需要tab缩进，直接在前面加\t
+p|Object|段落的样式，可选值为textAlign、fontSize、fontWeight，解释见excel导出
+
+##### Array
+
+> 二维数组，表示一个表格，类似于导出excel的aoa_to_sheet
+> 
+> 与excel不同的是，无需指定mergeCell，值后面出现的null会被强制合并
+> 
+> 传入的二维数组必须是一个矩阵，不然会被强制填充
+
+> TODO 目前对单元格的样式稍未支持 后续将更新(优先支持对整行的样式定制) API如下
+
+```javascript
+let tableAst = [
+  [1, 2, 3],
+  [4, 5, 6]
+];
+tableAst[0].s = {/*...*/};
+```
+
+
+
