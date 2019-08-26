@@ -10,11 +10,11 @@ let XLSX = Office.XLSX;
 /**
  * 生成一个新的workbook
  */
-let wb = XLSX.utils.book_new();
+let wb = XLSX.book_new();
 /**
  * 将二维数组转换成表格
  */
-let ws = XLSX.utils.aoa_to_sheet(
+let ws = XLSX.aoa_to_sheet(
   [
     [1, null, '吉米'],
     [4, 5, 6]
@@ -42,7 +42,7 @@ ws.merge.push('A1:B1');
 /**
  * 将表格与sheet名字插入workbook
  */
-XLSX.utils.book_append_sheet(wb, ws, "sheet12");
+XLSX.book_append_sheet(wb, ws, "sheet12");
 /**
  * 生成Excel文件
  */
