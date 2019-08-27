@@ -54,20 +54,28 @@ let DOCX = Office.DOCX;
 /**
  * 生成描述docx的抽象语法树
  */
+let table = [
+  ['吉米', null, null],
+  [1,'是',3],
+  [4,'傻逼',6],
+];
+/**
+ * 设置第一行的样式
+ */ 
+table[0].s = {
+  fontWeight: 'bold',
+  textAlign: 'center',
+};
 let ast = [
   { t: '测 试', p: { textAlign: 'center', fontSize: 32, fontWeight: 'bold' } },
   'br',
   { t: '这是开头：', p: { fontWeight: 'bold' } },
   { t: '\t这是带了一个tab的段落'},
-  [
-    ['吉米', null, null],
-    [1,'是',3],
-    [4,'傻逼',6],
-  ]
+  table,
 ];
 DOCX.writeFile(ast, 'word.docx');
 ```
-
+---
 
 ### 导出Excel文档
 
@@ -113,15 +121,4 @@ p|Object|段落的样式，可选值为textAlign、fontSize、fontWeight，解�
 > 
 > 传入的二维数组必须是一个矩阵，不然会被强制填充
 
-> TODO 目前对单元格的样式稍未支持 后续将更新(优先支持对整行的样式定制) API如下
-
-```js
-let tableAst = [
-  [1, 2, 3],
-  [4, 5, 6]
-];
-tableAst[0].s = {/*...*/};
-```
-
-
-
+> TODO 目前对单元格的样式仅支持水平对齐与粗体 后续不想更新样式了
