@@ -3,7 +3,7 @@
 
 使用方法如下
 
-#### 导出Excel
+### 导出Excel示例
 ```js
 let XLSX = Office.XLSX;
 /**
@@ -49,7 +49,7 @@ XLSX.writeFile(wb, '测试.xlsx');
 ```
 ---
 
-### 导出Excel文档
+### Excel文档
 
 #### 样式定制
 
@@ -63,7 +63,7 @@ verticalAlign|垂直对齐|String|top,bottom,center|top
 
 其他样式基本也不会用到，就不搞了
 
-#### 导出Word
+### 导出Word示例
 ```js
 let DOCX = Office.DOCX;
 // 表格
@@ -96,7 +96,7 @@ DOCX.writeFile(ast, 'word.docx');
 ```
 
 ---
-### 导出word文档
+### word文档
 
 目前仅支持AST数组的参数，后续扩展对DOM转换的支持
 
