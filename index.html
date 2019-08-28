@@ -35,7 +35,7 @@
     verticalAlign: 'bottom',
   };
   XLSX.book_append_sheet(wb, ws, "测试sheet");
-  // XLSX.writeFile(wb, 'excel.xlsx');
+  XLSX.writeFile(wb, 'excel.xlsx');
 
   let DOCX = Office.DOCX;
   let table = [
@@ -54,7 +54,7 @@
     { t: '\t这是带了一个tab的段落'},
     table,
   ];
-  // DOCX.writeFile(ast, 'word.docx');
+  DOCX.writeFile(ast, 'word.docx');
 </script>
 
 </html>

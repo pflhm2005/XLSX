@@ -118,7 +118,7 @@ p|Object|段落的样式，可选值为textAlign、fontSize、fontWeight，解�
 
 > 二维数组，表示一个表格，类似于导出excel的aoa_to_sheet
 > 
-> 与excel不同的是，无需指定mergeCell，值后面出现的null会被强制合并
+> 与excel不同的是，无需指定mergeCell，值后面出现的null会被强制合并，若需要空表格，请传入空字符串
 > 
 > 传入的二维数组必须是一个矩阵，不然会被强制填充
 
