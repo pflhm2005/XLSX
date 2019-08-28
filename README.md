@@ -45,7 +45,7 @@ XLSX.book_append_sheet(wb, ws, "sheet12");
 /**
  * 生成Excel文件
  */
-// XLSX.writeFile(wb, '测试.xlsx');
+XLSX.writeFile(wb, '测试.xlsx');
 ```
 
 #### 导出Word
@@ -74,7 +74,7 @@ let ast = [
   { t: '\t这是带了一个tab的段落'},
   table,
 ];
-// DOCX.writeFile(ast, 'word.docx');
+DOCX.writeFile(ast, 'word.docx');
 ```
 ---
 
