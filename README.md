@@ -51,9 +51,7 @@ XLSX.writeFile(wb, '测试.xlsx');
 #### 导出Word
 ```js
 let DOCX = Office.DOCX;
-/**
- * 生成描述docx的抽象语法树
- */
+// 表格
 let table = [
   ['吉米', null, null],
   [1,'是',3],
@@ -66,6 +64,9 @@ table[0].s = {
   fontWeight: 'bold',
   textAlign: 'center',
 };
+/**
+ * 生成描述docx的抽象语法树
+ */
 let ast = [
   { t: '测 试', p: { textAlign: 'center', fontSize: 32, fontWeight: 'bold' } },
   'br',
