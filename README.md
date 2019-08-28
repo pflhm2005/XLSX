@@ -47,9 +47,8 @@ XLSX.book_append_sheet(wb, ws, "sheet12");
  */
 XLSX.writeFile(wb, '测试.xlsx');
 ```
----
 
-### Excel文档
+### 文档
 
 #### 样式定制
 
@@ -97,8 +96,7 @@ let ast = [
 DOCX.writeFile(ast, 'word.docx');
 ```
 
----
-### word文档
+### 文档
 
 目前仅支持AST数组的参数，后续扩展对DOM转换的支持
 
