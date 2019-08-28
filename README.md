@@ -63,6 +63,8 @@ verticalAlign|垂直对齐|String|top,bottom,center|top
 
 其他样式基本也不会用到，就不搞了
 
+---
+
 ### 导出Word示例
 ```js
 let DOCX = Office.DOCX;
