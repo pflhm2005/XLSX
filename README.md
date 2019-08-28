@@ -47,6 +47,21 @@ XLSX.book_append_sheet(wb, ws, "sheet12");
  */
 XLSX.writeFile(wb, '测试.xlsx');
 ```
+---
+
+### 导出Excel文档
+
+#### 样式定制
+
+key|描述|type|可选值|默认值
+--|--|--|--|--
+fontSize|字体大小|Number|--|12
+fontWeight|是否加粗|String|normal,bold|normal
+fontFamily|字体类型|String|等线,微软雅黑(还支持一些其他值)|等线
+textAlign|水平对齐|String|left,right,center|left
+verticalAlign|垂直对齐|String|top,bottom,center|top
+
+其他样式基本也不会用到，就不搞了
 
 #### 导出Word
 ```js
@@ -74,23 +89,11 @@ let ast = [
   { t: '\t这是带了一个tab的段落'},
   table,
 ];
+/**
+ * 导出word文档
+ */
 DOCX.writeFile(ast, 'word.docx');
 ```
----
-
-### 导出Excel文档
-
-#### 样式定制
-
-key|描述|type|可选值|默认值
---|--|--|--|--
-fontSize|字体大小|Number|--|12
-fontWeight|是否加粗|String|normal,bold|normal
-fontFamily|字体类型|String|等线,微软雅黑(还支持一些其他值)|等线
-textAlign|水平对齐|String|left,right,center|left
-verticalAlign|垂直对齐|String|top,bottom,center|top
-
-其他样式基本也不会用到，就不搞了
 
 ---
 ### 导出word文档
