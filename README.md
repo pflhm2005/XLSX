@@ -20,20 +20,16 @@ let ws = XLSX.aoa_to_sheet(
   ]
 );
 /**
- * 设置A1,C1单元格的样式
+ * 设置A1,B1,C1单元格的样式
  */
-ws.A1.s = {
+// 返回A1,B1,C1
+XLSX.getColumnRange('A', 'C', 1).forEach(pos => ws[pos].s = {
   fontSize: 14,
   fontWeight: 'bold',
   fontFamily: '微软雅黑',
   textAlign: 'center',
   verticalAlign: 'center',
-};
-ws.C1.s = {
-  fontSize: 12,
-  textAlign: 'right',
-  verticalAlign: 'bottom',
-};
+});
 /**
  * 设置合并的单元格
  */
