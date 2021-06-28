@@ -44,11 +44,7 @@ XLSX.book_append_sheet(wb, ws, "sheet12");
 XLSX.writeFile(wb, '测试.xlsx');
 ```
 
-
-
-## 文档
-
-### 样式定制
+## 样式定制
 
 key|描述|type|可选值|默认值
 --|--|--|--|--
@@ -60,9 +56,9 @@ verticalAlign|垂直对齐|String|top,bottom,center|top
 
 其他样式基本也不会用到，就不搞了
 
-### 工具方法
+## 工具方法
 
-#### book_new(void void)
+### book_new(void void)
 > 返回一个xlsx的基础文档对象，具体内容如下
 #### 使用示例
 ```
@@ -76,7 +72,7 @@ const wb = book_new()
 }
 ```
 
-#### aoa_to_sheet(Array table)
+### aoa_to_sheet(Array table)
 > 将二维数组转换为工作表配置
 #### 使用示例
 ```
@@ -98,7 +94,7 @@ const ws = aoa_to_sheet([
 }
 ```
 
-#### book_append_sheet(Object wb, Object ws, String name)
+### book_append_sheet(Object wb, Object ws, String name)
 > 将工作表的配置添加到Excel基础对象
 #### 使用示例
 ```
@@ -107,7 +103,7 @@ book_append_sheet(wb, ws, 'sheet1')
 ```
 #### 无返回
 
-#### getColumnRange(String alpha, String alpha, Number index)
+### getColumnRange(String alpha, String alpha, Number index)
 > 返回指定列的数个单元格
 #### 使用示例
 ```
