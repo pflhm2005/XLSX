@@ -34,9 +34,11 @@ ws.C1.s = {
   verticalAlign: 'bottom',
 };
 
-// 设置行列的高度
+ // 设置行列高度
 XLSX.setRowOrColumnStyle(ws, 'row', 1, 'height', 70);
-XLSX.setRowOrColumnStyle(ws, 'column', 1, 'height', 70);
+XLSX.setRowOrColumnStyle(ws, 'column', 'A', 'height', 70);
+// 隐藏行列
+XLSX.setRowOrColumnStyle(ws, 'column', 'B', 'hidden');
 
 // 添加工作表到文档对象中
 XLSX.book_append_sheet(wb, ws, "测试sheet");
@@ -54,8 +56,10 @@ textAlign|水平对齐|String|left,right,center|left
 verticalAlign|垂直对齐|String|top,bottom,center|top
 
 其他样式基本也不会用到，就不搞了
+<br/>
 
 ## 工具方法
+<br/>
 
 ### book_new(void void)
 > 返回一个xlsx的基础文档对象，具体内容如下
@@ -70,6 +74,7 @@ const wb = book_new()
   Sheets: {} // 工作表映射对象
 }
 ```
+<br/>
 
 ### aoa_to_sheet(Array table)
 > 将二维数组转换为工作表配置
@@ -94,6 +99,7 @@ const ws = aoa_to_sheet([
   C3: { v: 9 },
 }
 ```
+<br/>
 
 ### book_append_sheet(Object wb, Object ws, String name)
 > 将工作表的配置添加到Excel基础对象
@@ -103,6 +109,7 @@ const ws = aoa_to_sheet([
 book_append_sheet(wb, ws, 'sheet1')
 ```
 #### 无返回
+<br/>
 
 ### getColumnRange(String alpha, String alpha, Number index)
 > 返回指定列的数个单元格
@@ -114,6 +121,7 @@ const pos = getColumnRange('A', 'C', 1)
 ```
 ['A1', 'B1', 'C1']
 ```
+<br/>
 
 ### setRowOrColumnStyle(Object ws, String type, Number index, String attribute, Number|String value)
 > 设置行列属性 目前只支持高度设置

@@ -63,9 +63,11 @@
     verticalAlign: 'bottom',
   };
 
-  // 设置第一行的高度
+  // 设置行列高度
   XLSX.setRowOrColumnStyle(ws, 'row', 1, 'height', 70);
   XLSX.setRowOrColumnStyle(ws, 'column', 'A', 'height', 70);
+  // 隐藏行列
+  XLSX.setRowOrColumnStyle(ws, 'column', 'B', 'hidden');
 
   // 添加工作表到文档对象中
   XLSX.book_append_sheet(wb, ws, "测试sheet");
