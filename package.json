@@ -1,0 +1,27 @@
+{
+  "name": "xlsx",
+  "version": "1.0.0",
+  "description": "实现纯前端Excel、Word的导出，支持简单的单元格样式定制",
+  "main": "dist.min.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pflhm2005/xlsx.git"
+  },
+  "author": "Jimmy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pflhm2005/xlsx/issues"
+  },
+  "homepage": "https://github.com/pflhm2005/xlsx#readme",
+  "devDependencies": {
+    "webpack": "^5.40.0",
+    "webpack-cli": "^4.7.2"
+  }
+}

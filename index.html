@@ -7,12 +7,34 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Document</title>
 </head>
-
+<style>
+  body{
+    text-align: center;
+    margin-top: 300px;
+  }
+  p{
+    cursor: pointer;
+    font-size: 14px;
+    color: #fff;
+    background-color: #07c160;
+    border: 1px solid #07c160;
+    display: inline-block;
+    padding: 10px 20px;
+  }
+</style>
 <body>
+  <div>
+    <p id="xlsx">点击生成EXCEL文档</p>
+  </div>
+  <div>
+    <p id="docx">点击生成WORD文档</p>
+  </div>
 </body>
 <!-- 这个版本比较老 -->
 <script src="./dist.min.js"></script>
 <script>
+  const xlsx = document.getElementById('xlsx');
+
   let XLSX = Office.XLSX;
   let wb = XLSX.book_new();
   let ws = XLSX.aoa_to_sheet(
@@ -36,13 +58,17 @@
     verticalAlign: 'bottom',
   };
   XLSX.book_append_sheet(wb, ws, "测试sheet");
-  XLSX.writeFile(wb, 'excel.xlsx');
+  xlsx.addEventListener('click', () => {
+    XLSX.writeFile(wb, 'excel.xlsx');
+  });
+
+  const docx = document.getElementById('docx');
 
   let DOCX = Office.DOCX;
   let table = [
     ['吉米', null, null],
-    [1,'是',3],
-    [4,'傻逼',6],
+    [1, '是', 3],
+    [4, '傻逼', 6],
   ];
   table[0].s = {
     fontWeight: 'bold',
@@ -52,10 +78,12 @@
     { t: '测 试', p: { textAlign: 'center', fontSize: 32, fontWeight: 'bold' } },
     'br',
     { t: '这是开头：', p: { fontWeight: 'bold' } },
-    { t: '\t这是带了一个tab的段落'},
+    { t: '\t这是带了一个tab的段落' },
     table,
   ];
-  DOCX.writeFile(ast, 'word.docx');
+  docx.addEventListener('click', () => {
+    DOCX.writeFile(ast, 'word.docx');
+  });
 </script>
 
 </html>
