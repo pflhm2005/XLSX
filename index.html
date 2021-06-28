@@ -30,7 +30,6 @@
     <p id="docx">点击生成WORD文档</p>
   </div>
 </body>
-<!-- 这个版本比较老 -->
 <script src="./dist.min.js"></script>
 <script>
   const xlsx = document.getElementById('xlsx');
@@ -41,7 +40,8 @@
     [
       [1, null, '吉米'],
       [4, 5, 6]
-    ]);
+    ]
+  );
   ws.merge.push('A1:B1');
   ws.A1.s = {
     fontSize: 14,
