@@ -36,13 +36,18 @@
 
   let XLSX = Office.XLSX;
   let wb = XLSX.book_new();
+  // 生成工作表基本数据
   let ws = XLSX.aoa_to_sheet(
     [
-      [1, null, '吉米'],
-      [4, 5, 6]
+      [1, null, '吉米', 'a'],
+      [4, 5, 6, 'c']
     ]
   );
+
+  // 设置合并单元格
   ws.merge.push('A1:B1');
+
+  // 设置单元格样式
   ws.A1.s = {
     fontSize: 14,
     fontWeight: 'bold',
@@ -57,7 +62,14 @@
     textAlign: 'right',
     verticalAlign: 'bottom',
   };
+
+  // 设置第一行的高度
+  XLSX.setRowOrColumnStyle(ws, 'row', 1, 'height', 70);
+  XLSX.setRowOrColumnStyle(ws, 'column', 'A', 'height', 70);
+
+  // 添加工作表到文档对象中
   XLSX.book_append_sheet(wb, ws, "测试sheet");
+  console.log(ws)
   xlsx.addEventListener('click', () => {
     XLSX.writeFile(wb, 'excel.xlsx');
   });
