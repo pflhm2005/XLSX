@@ -124,13 +124,16 @@ const pos = getColumnRange('A', 'C', 1)
 <br/>
 
 ### setRowOrColumnStyle(Object ws, String type, Number index, String attribute, Number|String value)
-> 设置行列属性 目前只支持高度设置
+> 设置行列属性 目前只支持高度、隐藏设置
 #### 使用示例
 ```
 // 在内部处理时 行高单位为磅而列宽单位为字符 为了方便统一为磅 
 // 1字符约等于6.1磅
 setRowOrColumnStyle(ws, 'row', 1, 'height', 70);
 setRowOrColumnStyle(ws, 'column', 'A', 'height', 70);
+
+// 隐藏某一行
+setRowOrColumnStyle(ws, 'column', 'A', 'hidden', 70);
 ```
 #### 无返回
 
