@@ -6,42 +6,43 @@
 ## 导出Excel示例
 ```js
 let XLSX = Office.XLSX;
-/**
- * 生成一个新的workbook
- */
 let wb = XLSX.book_new();
-/**
- * 将二维数组转换成表格
- */
+// 生成工作表基本数据
 let ws = XLSX.aoa_to_sheet(
   [
-    [1, null, '吉米'],
-    [4, 5, 6]
+    [1, null, '吉米', 'a'],
+    [4, 5, 6, 'c']
   ]
 );
-/**
- * 设置A1,B1,C1单元格的样式
- */
-// 返回A1,B1,C1
-XLSX.getColumnRange('A', 'C', 1).forEach(pos => ws[pos].s = {
+
+// 设置合并单元格
+ws.merge.push('A1:B1');
+
+// 设置单元格样式
+ws.A1.s = {
   fontSize: 14,
   fontWeight: 'bold',
   fontFamily: '微软雅黑',
   textAlign: 'center',
   verticalAlign: 'center',
-});
-/**
- * 设置合并的单元格
- */
-ws.merge.push('A1:B1');
-/**
- * 将表格与sheet名字插入workbook
- */
-XLSX.book_append_sheet(wb, ws, "sheet12");
-/**
- * 生成Excel文件
- */
-XLSX.writeFile(wb, '测试.xlsx');
+};
+ws.C1.s = {
+  fontSize: 12,
+  fontWeight: 'bold',
+  fontFamily: '微软雅黑',
+  textAlign: 'right',
+  verticalAlign: 'bottom',
+};
+
+ // 设置行列高度
+XLSX.setRowOrColumnStyle(ws, 'row', 1, 'height', 70);
+XLSX.setRowOrColumnStyle(ws, 'column', 'A', 'height', 70);
+// 隐藏行列
+XLSX.setRowOrColumnStyle(ws, 'column', 'B', 'hidden');
+
+// 添加工作表到文档对象中
+XLSX.book_append_sheet(wb, ws, "测试sheet");
+XLSX.writeFile(wb, 'excel.xlsx');
 ```
 
 ## 样式定制
@@ -55,8 +56,10 @@ textAlign|水平对齐|String|left,right,center|left
 verticalAlign|垂直对齐|String|top,bottom,center|top
 
 其他样式基本也不会用到，就不搞了
+<br/>
 
 ## 工具方法
+<br/>
 
 ### book_new(void void)
 > 返回一个xlsx的基础文档对象，具体内容如下
@@ -71,6 +74,7 @@ const wb = book_new()
   Sheets: {} // 工作表映射对象
 }
 ```
+<br/>
 
 ### aoa_to_sheet(Array table)
 > 将二维数组转换为工作表配置
@@ -87,12 +91,15 @@ const ws = aoa_to_sheet([
 {
   ref: 'A1:C3', // 表格的范围值
   merge: [], // 表格的合并信息
-  A1: { v: 1 }
+  rowStyle: {}, // 行格式集合
+  columnStyle: {},  // 列格式集合
+  A1: { v: 1 }  // 每一个表格的值
   A2: { v: 2 },
   ...,
-  C3: { v: 9 }, // 每一个表格的值
+  C3: { v: 9 },
 }
 ```
+<br/>
 
 ### book_append_sheet(Object wb, Object ws, String name)
 > 将工作表的配置添加到Excel基础对象
@@ -102,6 +109,7 @@ const ws = aoa_to_sheet([
 book_append_sheet(wb, ws, 'sheet1')
 ```
 #### 无返回
+<br/>
 
 ### getColumnRange(String alpha, String alpha, Number index)
 > 返回指定列的数个单元格
@@ -113,6 +121,21 @@ const pos = getColumnRange('A', 'C', 1)
 ```
 ['A1', 'B1', 'C1']
 ```
+<br/>
+
+### setRowOrColumnStyle(Object ws, String type, Number index, String attribute, Number|String value)
+> 设置行列属性 目前只支持高度、隐藏设置
+#### 使用示例
+```
+// 在内部处理时 行高单位为磅而列宽单位为字符 为了方便统一为磅 
+// 1字符约等于6.1磅
+setRowOrColumnStyle(ws, 'row', 1, 'height', 70);
+setRowOrColumnStyle(ws, 'column', 'A', 'height', 70);
+
+// 隐藏某一行
+setRowOrColumnStyle(ws, 'column', 'A', 'hidden', 70);
+```
+#### 无返回
 
 
 ---
