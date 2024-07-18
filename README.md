@@ -34,6 +34,12 @@ ws.C1.s = {
   verticalAlign: 'bottom',
 };
 
+// 设置单元格公式
+ws.C1.t = {
+  type: 'list',
+  list: ['吉米', '吉米2', '吉米3'],
+};
+
  // 设置行列高度
 XLSX.setRowOrColumnStyle(ws, 'row', 1, 'height', 70);
 XLSX.setRowOrColumnStyle(ws, 'column', 'A', 'height', 70);
