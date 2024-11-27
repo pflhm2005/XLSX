@@ -10,7 +10,7 @@ let wb = XLSX.book_new();
 // 生成工作表基本数据
 let ws = XLSX.aoa_to_sheet(
   [
-    [1, null, '吉米', 'a'],
+    ['fdsfdfdsafdasfdas', null, '吉米', 'a'],
     [4, 5, 6, 'c']
   ]
 );
@@ -25,6 +25,7 @@ ws.A1.s = {
   fontFamily: '微软雅黑',
   textAlign: 'center',
   verticalAlign: 'center',
+  wrap: true
 };
 ws.C1.s = {
   fontSize: 12,
@@ -63,8 +64,8 @@ fontWeight|是否加粗|String|normal,bold|normal
 fontFamily|字体类型|String|等线,微软雅黑(还支持一些其他值)|等线
 textAlign|水平对齐|String|left,right,center|left
 verticalAlign|垂直对齐|String|top,bottom,center|top
+wrap|自动换行|Boolean|true/不填|false
 
-其他样式基本也不会用到，就不搞了
 <br/>
 
 ## 单元格公式定制
