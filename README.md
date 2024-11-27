@@ -40,6 +40,9 @@ ws.C1.t = {
   list: ['吉米', '吉米2', '吉米3'],
 };
 
+// 设置单元格公式
+ws.A3.f = 'SUM(A1:A2)';
+
  // 设置行列高度
 XLSX.setRowOrColumnStyle(ws, 'row', 1, 'height', 70);
 XLSX.setRowOrColumnStyle(ws, 'column', 'A', 'height', 70);
@@ -65,6 +68,8 @@ verticalAlign|垂直对齐|String|top,bottom,center|top
 <br/>
 
 ## 单元格公式定制
+
+格式值等同于在EXCEL中直接写的字符串，目前支持SUM、COUNT、AVERAGE、MAX、MIN五个公式
 
 ### 下拉列表
 ```
