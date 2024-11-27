@@ -71,6 +71,8 @@ verticalAlign|垂直对齐|String|top,bottom,center|top
 
 格式值等同于在EXCEL中直接写的字符串，目前支持SUM、COUNT、AVERAGE、MAX、MIN五个公式
 
+注：不支持嵌套公式使用，未做错误处理
+
 ### 下拉列表
 ```
 {
