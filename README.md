@@ -41,6 +41,11 @@ ws.C1.t = {
   list: ['吉米', '吉米2', '吉米3'],
 };
 
+// 插入图片
+XLSX.setImage(ws, 'E5', {
+  src: 'http://img.hb.aicdn.com/38d8f519b3f464a80d85ed9632fed904ed0181f41d632-ZHrigO_fw658'
+});
+
 // 设置单元格公式
 ws.A3.f = 'SUM(A1:A2)';
 
@@ -67,6 +72,18 @@ verticalAlign|垂直对齐|String|top,bottom,center|top
 wrap|自动换行|Boolean|true/不填|false
 
 <br/>
+
+## 插入图片
+
+注：本功能限制较大 仅支持线上图片且服务器配置了access-control-allow-origin: '*' 办法钻研中
+
+```js
+// 示例代码
+XLSX.setImage(ws, 'E5', {
+  src: 'http://img.hb.aicdn.com/38d8f519b3f464a80d85ed9632fed904ed0181f41d632-ZHrigO_fw658'
+});
+```
+该代码在表格的E5处生成一张图片，左上角为顶点，大小为图片原始尺寸，暂不支持手动定制
 
 ## 单元格公式定制
 

@@ -78,14 +78,19 @@
     list: ['吉米', '吉米2', '吉米3'],
   };
 
+  // 插入图片
+  XLSX.setImage(ws, 'E5', {
+    src: 'http://img.hb.aicdn.com/38d8f519b3f464a80d85ed9632fed904ed0181f41d632-ZHrigO_fw658'
+  });
+
   // 设置单元格公式
   ws.A3.f = 'AVERAGE(A1:D2)';
 
   // 设置行列高度
-  XLSX.setRowOrColumnStyle(ws, 'row', 1, 'height', 70);
-  XLSX.setRowOrColumnStyle(ws, 'column', 'A', 'height', 70);
+  XLSX.setRCStyle(ws, 1, 'len', 100);
+  XLSX.setRCStyle(ws, 'A', 'len', 100);
   // 隐藏行列
-  XLSX.setRowOrColumnStyle(ws, 'column', 'B', 'hidden');  
+  // XLSX.setRowOrColumnStyle(ws, 'column', 'B', 'hidden');  
 
   // 添加工作表到文档对象中
   XLSX.book_append_sheet(wb, ws, "测试sheet");
