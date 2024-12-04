@@ -79,11 +79,25 @@ wrap|自动换行|Boolean|true/不填|false
 
 ```js
 // 示例代码
+XLSX.setImage(ws, 'E10', {
+  src: 'http://img.hb.aicdn.com/38d8f519b3f464a80d85ed9632fed904ed0181f41d632-ZHrigO_fw658',
+  type: 'link',
+  scale: 1
+});
+// file为upload组件上传后的内容 具体使用方法参考index.html中的代码
 XLSX.setImage(ws, 'E5', {
-  src: 'http://img.hb.aicdn.com/38d8f519b3f464a80d85ed9632fed904ed0181f41d632-ZHrigO_fw658'
+  file,
+  type: 'upload',
+  scale: 0.3
 });
 ```
-该代码在表格的E5处生成一张图片，左上角为顶点，大小为图片原始尺寸，暂不支持手动设置图片大小
+该代码在表格的指定地点处生成一张图片，左上角为顶点，大小为图片原始尺寸
+key|描述|type|可选值|默认值
+--|--|--|--|--
+type|图片类型|String|link,upload|--
+src|当type为link时必填|String|--|--
+file|当类型为upload时必填|File|--|--
+scale|缩放|Number|0-1|1
 
 ## 单元格公式定制
 

@@ -35,67 +35,98 @@
   <div class="content">
     <p id="xlsx">点击生成Excel文档</p>
     <p id="docx">点击生成Word文档</p>
+    <p id="img">选择图片</p>
+    <canvas id="canvas"></canvas>
   </div>
 </body>
 <script src="./dist.min.js"></script>
 <script>
-  const xlsx = document.getElementById('xlsx');
+  const imgSelect = document.getElementById('img');
+  let file = null;
 
-  let XLSX = Office.XLSX;
-  let wb = XLSX.book_new();
-  // 生成工作表基本数据
-  let ws = XLSX.aoa_to_sheet(
-    [
-      ['fdsfdfdsafdasfdas', null, '吉米', 'a'],
-      [4, 5, 6, 'c'],
-      ['', 10, 5]
-    ]
-  );
+  function exportExcel() {
+    const xlsx = document.getElementById('xlsx');
 
-  // 设置合并单元格
-  ws.merge.push('A1:B1');
+    let XLSX = Office.XLSX;
+    let wb = XLSX.book_new();
+    // 生成工作表基本数据
+    let ws = XLSX.aoa_to_sheet(
+      [
+        ['fdsfdfdsafdasfdas', null, '吉米', 'a'],
+        [4, 5, 6, 'c'],
+        ['', 10, 5]
+      ]
+    );
 
-  // 设置单元格样式
-  ws.A1.s = {
-    fontSize: 14,
-    fontWeight: 'bold',
-    fontFamily: '微软雅黑',
-    textAlign: 'center',
-    verticalAlign: 'center',
-    wrap: true
-  };
-  ws.C1.s = {
-    fontSize: 12,
-    fontWeight: 'bold',
-    fontFamily: '微软雅黑',
-    textAlign: 'right',
-    verticalAlign: 'bottom',
-  };
+    // 设置合并单元格
+    ws.merge.push('A1:B1');
 
-  // 设置单元格特殊格式
-  ws.C1.t = {
-    type: 'list',
-    list: ['吉米', '吉米2', '吉米3'],
-  };
+    // 设置单元格样式
+    ws.A1.s = {
+      fontSize: 14,
+      fontWeight: 'bold',
+      fontFamily: '微软雅黑',
+      textAlign: 'center',
+      verticalAlign: 'center',
+      wrap: true
+    };
+    ws.C1.s = {
+      fontSize: 12,
+      fontWeight: 'bold',
+      fontFamily: '微软雅黑',
+      textAlign: 'right',
+      verticalAlign: 'bottom',
+    };
 
-  // 插入图片
-  XLSX.setImage(ws, 'E5', {
-    src: 'http://img.hb.aicdn.com/38d8f519b3f464a80d85ed9632fed904ed0181f41d632-ZHrigO_fw658'
-  });
+    // 设置单元格特殊格式
+    ws.C1.t = {
+      type: 'list',
+      list: ['吉米', '吉米2', '吉米3'],
+    };
 
-  // 设置单元格公式
-  ws.A3.f = 'AVERAGE(A1:D2)';
+    // 插入图片
+    XLSX.setImage(ws, 'E10', {
+      src: 'http://img.hb.aicdn.com/38d8f519b3f464a80d85ed9632fed904ed0181f41d632-ZHrigO_fw658',
+      type: 'link',
+      scale: 1
+    });
 
-  // 设置行列高度
-  XLSX.setRCStyle(ws, 1, 'len', 100);
-  XLSX.setRCStyle(ws, 'A', 'len', 100);
-  // 隐藏行列
-  // XLSX.setRowOrColumnStyle(ws, 'column', 'B', 'hidden');  
+    XLSX.setImage(ws, 'E5', {
+      file,
+      type: 'upload',
+      scale: 0.3
+    });
 
-  // 添加工作表到文档对象中
-  XLSX.book_append_sheet(wb, ws, "测试sheet");
-  xlsx.addEventListener('click', () => {
-    XLSX.writeFile(wb, 'excel.xlsx');
+    // 设置单元格公式
+    ws.A3.f = 'AVERAGE(A1:D2)';
+
+    // 设置行列高度
+    XLSX.setRCStyle(ws, 1, 'len', 100);
+    XLSX.setRCStyle(ws, 'A', 'len', 100);
+    // 隐藏行列
+    // XLSX.setRowOrColumnStyle(ws, 'column', 'B', 'hidden');  
+
+    // 添加工作表到文档对象中
+    XLSX.book_append_sheet(wb, ws, "测试sheet");
+    xlsx.addEventListener('click', () => {
+      XLSX.writeFile(wb, 'excel.xlsx');
+    });
+  }
+
+  imgSelect.addEventListener('click', async () => {
+    const [fileHandle] = await window.showOpenFilePicker({
+      types: [
+        {
+          description: '图片',
+          accept: {
+            "image/*": [".png", ".gif", ".jpeg", ".jpg"],
+          }
+        }
+      ],
+      multiple: false,
+    });
+    file = await fileHandle.getFile();
+    exportExcel();
   });
 
   const docx = document.getElementById('docx');
