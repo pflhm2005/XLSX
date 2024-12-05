@@ -75,15 +75,19 @@ wrap|自动换行|Boolean|true/不填|false
 
 ## 插入图片
 
-注：本功能限制较大 仅支持线上图片且服务器配置了access-control-allow-origin: '*' 办法钻研中
+<del>注：本功能限制较大 仅支持线上图片且服务器配置了access-control-allow-origin: '*' 办法钻研中
+
+注：webpack环境下通过require引入的本地图片不存在跨域问题，此问题不复存在
 
 ```js
 // 示例代码
+const imgSrc = require('./1.img');
 XLSX.setImage(ws, 'E10', {
-  src: 'http://img.hb.aicdn.com/38d8f519b3f464a80d85ed9632fed904ed0181f41d632-ZHrigO_fw658',
-  type: 'link',
+  src: imgSrc,
+  type: 'require',
   scale: 1
 });
+
 // file为upload组件上传后的内容 具体使用方法参考index.html中的代码
 XLSX.setImage(ws, 'E5', {
   file,
@@ -94,9 +98,9 @@ XLSX.setImage(ws, 'E5', {
 该代码在表格的指定地点处生成一张图片，左上角为顶点，大小为图片原始尺寸
 key|描述|type|可选值|默认值
 --|--|--|--|--
-type|图片类型|String|link,upload|--
-src|当type为link时必填|String|--|--
-file|当类型为upload时必填|File|--|--
+type|图片类型|String|require,upload|--
+src|当type为require时必填 图片本地路径|String|--|--
+file|当type为upload时必填|File|--|--
 scale|缩放|Number|0-1|1
 
 ## 单元格公式定制
