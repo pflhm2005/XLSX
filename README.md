@@ -88,6 +88,12 @@ XLSX.setImage(ws, 'E10', {
   scale: 1
 });
 
+XLSX.setImage(ws, 'A6', {
+  url: 'https://upload-bbs.miyoushe.com/upload/2024/10/13/320976312/315fee6585856afffec9d68fde3f83f8_8108493027679971434.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg',
+  type: 'url',
+  scale: 1
+});
+
 // file为upload组件上传后的内容 具体使用方法参考index.html中的代码
 XLSX.setImage(ws, 'E5', {
   file,
@@ -98,8 +104,9 @@ XLSX.setImage(ws, 'E5', {
 该代码在表格的指定地点处生成一张图片，左上角为顶点，大小为图片原始尺寸
 key|描述|type|可选值|默认值
 --|--|--|--|--
-type|图片类型|String|require,upload|--
-src|当type为require时必填 图片本地路径|String|--|--
+type|图片类型|String|require,upload,url|--
+src|当type为require时必填 本地图片 通过require引入|String|--|--
+url|当type为url时必填 线上图片链接|String|--|--
 file|当type为upload时必填|File|--|--
 scale|缩放|Number|0-1|1
 
