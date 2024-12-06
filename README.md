@@ -51,11 +51,9 @@ XLSX.setImage(ws, 'A6', {
 // 设置单元格公式
 ws.A3.f = 'SUM(A1:A2)';
 
- // 设置行列高度
-XLSX.setRowOrColumnStyle(ws, 'row', 1, 'height', 70);
-XLSX.setRowOrColumnStyle(ws, 'column', 'A', 'height', 70);
-// 隐藏行列
-XLSX.setRowOrColumnStyle(ws, 'column', 'B', 'hidden');
+// 设置行列高度
+XLSX.setRCStyle(ws, 1, 'len', 100);
+XLSX.setRCStyle(ws, 'A', 'len', 100);
 
 // 添加工作表到文档对象中
 XLSX.book_append_sheet(wb, ws, "测试sheet");
