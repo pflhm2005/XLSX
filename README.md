@@ -77,7 +77,7 @@ wrap|自动换行|Boolean|true/不填|false
 
 <del>注：本功能限制较大 仅支持线上图片且服务器配置了access-control-allow-origin: '*' 办法钻研中
 
-注：webpack环境下通过require引入的本地图片不存在跨域问题，此问题不复存在
+注：线上环境通过require引入的本地图片不存在跨域问题，此问题不复存在
 
 ```js
 // 示例代码
