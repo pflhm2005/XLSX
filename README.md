@@ -81,7 +81,7 @@ wrap|自动换行|Boolean|true/不填|false
 
 ```js
 // 示例代码
-const imgSrc = require('./1.img');
+const imgSrc = require('./1.png');
 XLSX.setImage(ws, 'E10', {
   src: imgSrc,
   type: 'require',
