@@ -42,8 +42,10 @@ ws.C1.t = {
 };
 
 // 插入图片
-XLSX.setImage(ws, 'E5', {
-  src: 'http://img.hb.aicdn.com/38d8f519b3f464a80d85ed9632fed904ed0181f41d632-ZHrigO_fw658'
+XLSX.setImage(ws, 'A6', {
+  url: 'https://upload-bbs.miyoushe.com/upload/2024/10/13/320976312/315fee6585856afffec9d68fde3f83f8_8108493027679971434.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg',
+  type: 'url',
+  scale: 1
 });
 
 // 设置单元格公式
