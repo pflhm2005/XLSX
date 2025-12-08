@@ -31,6 +31,7 @@
     background-color: #1772f6;
   }
 </style>
+<script src="./index.min.js"></script>
 <body>
   <div class="content">
     <p id="xlsx">点击生成Excel文档</p>
@@ -38,15 +39,14 @@
     <p id="img">选择图片</p>
   </div>
 </body>
-<script src="./dist.min.js"></script>
+
 <script>
   const imgSelect = document.getElementById('img');
   let file = null;
 
   function exportExcel() {
     const xlsx = document.getElementById('xlsx');
-
-    let XLSX = Office.XLSX;
+    let XLSX = window.Office.XLSX;
     let wb = XLSX.book_new();
     // 生成工作表基本数据
     let ws = XLSX.aoa_to_sheet(
@@ -106,11 +106,12 @@
 
     // 添加工作表到文档对象中
     XLSX.book_append_sheet(wb, ws, "测试sheet");
-    xlsx.addEventListener('click', () => {
-      XLSX.writeFile(wb, 'excel.xlsx');
-    });
+    XLSX.writeFile(wb, 'excel.xlsx')
   }
-  exportExcel();
+  xlsx.addEventListener('click', () => {
+    exportExcel();
+  });
+  
   // imgSelect.addEventListener('click', async () => {
   //   const [fileHandle] = await window.showOpenFilePicker({
   //     types: [
@@ -127,27 +128,31 @@
   //   exportExcel();
   // });
 
-  const docx = document.getElementById('docx');
+  function exportDocx() {
+    const docx = document.getElementById('docx');
 
-  let DOCX = Office.DOCX;
-  let table = [
-    ['吉米', null, null],
-    [1, '是', 3],
-    [4, '傻逼', 6],
-  ];
-  table[0].s = {
-    fontWeight: 'bold',
-    textAlign: 'center',
-  };
-  let ast = [
-    { t: '测 试', p: { textAlign: 'center', fontSize: 32, fontWeight: 'bold' } },
-    'br',
-    { t: '这是开头：', p: { fontWeight: 'bold' } },
-    { t: '\t这是带了一个tab的段落' },
-    table,
-  ];
-  docx.addEventListener('click', () => {
+    let DOCX = window.Office.DOCX;
+    let table = [
+      ['吉米', null, null],
+      [1, '是', 3],
+      [4, '傻逼', 6],
+    ];
+    table[0].s = {
+      fontWeight: 'bold',
+      textAlign: 'center',
+    };
+    let ast = [
+      // { type: 'text', t: '测 试', p: { textAlign: 'center', fontSize: 32, fontWeight: 'bold' } },
+      // 'br',
+      // { type: 'text', t: '这是开头：', p: { fontWeight: 'bold' } },
+      // { type: 'text', t: '\t这是带了一个tab的段落' },
+      { type: 'image', scale: 1, source: 'url', url: 'https://upload-bbs.miyoushe.com/upload/2024/10/13/320976312/315fee6585856afffec9d68fde3f83f8_8108493027679971434.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg' },
+      // table,
+    ];
     DOCX.writeFile(ast, 'word.docx');
+  }
+  docx.addEventListener('click', () => {
+    exportDocx();
   });
 </script>
 
