@@ -276,6 +276,7 @@ t|String|段落的文本，若需要tab缩进，直接在前面加\t
 p|Object|段落的样式，可选值为textAlign、fontSize、fontWeight，解释见excel导出
 
 #### 插入图片type=image(由于type字段被用于类型 对比于xlsx此字段改为source)
+> 图片的最大宽度约为414px 大于这个值会被强制设为414
 该代码在表格的指定地点处生成一张图片，左上角为顶点，大小为图片原始尺寸
 key|描述|type|可选值|默认值
 --|--|--|--|--
