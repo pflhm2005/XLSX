@@ -260,17 +260,28 @@ DOCX.writeFile(ast, 'word.docx');
 type|描述|可选值
 --|--|--
 String|特定格式的描述，目前仅支持空行|br
-Object|段落的抽象语法树|见下面
+Object|插入图片或段落的抽象语法树|见下面
 Array|Table的二维数组|见下面
 
 ### Object
 
+#### 段落type=text
 > 表示一个普通文本
 
 key|type|描述
 --|--|--
 t|String|段落的文本，若需要tab缩进，直接在前面加\t
 p|Object|段落的样式，可选值为textAlign、fontSize、fontWeight，解释见excel导出
+
+#### 插入图片type=image(由于type字段被用于类型 对比于xlsx此字段改为source)
+该代码在表格的指定地点处生成一张图片，左上角为顶点，大小为图片原始尺寸
+key|描述|type|可选值|默认值
+--|--|--|--|--
+source|图片类型|String|require,upload,url|--
+src|当type为require时必填 本地图片 通过require引入|String|--|--
+url|当type为url时必填 线上图片链接|String|--|--
+file|当type为upload时必填|File|--|--
+scale|缩放|Number|0-1|1
 
 #### Array
 
