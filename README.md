@@ -243,6 +243,8 @@ let ast = [
   'br',
   { t: '这是开头：', p: { fontWeight: 'bold' } },
   { t: '\t这是带了一个tab的段落'},
+  { type: 'image', scale: 1, source: 'url', url: 'https://upload-bbs.miyoushe.com/upload/2024/10/13/320976312/315fee6585856afffec9d68fde3f83f8_8108493027679971434.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg' },
+  { type: 'image', scale: 0.1, source: 'url', url: 'https://upload-bbs.miyoushe.com/upload/2024/10/13/320976312/315fee6585856afffec9d68fde3f83f8_8108493027679971434.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg' },
   table,
 ];
 /**
