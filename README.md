@@ -278,9 +278,9 @@ p|Object|段落的样式，可选值为textAlign、fontSize、fontWeight，解�
 key|描述|type|可选值|默认值
 --|--|--|--|--
 source|图片类型|String|require,upload,url|--
-src|当type为require时必填 本地图片 通过require引入|String|--|--
-url|当type为url时必填 线上图片链接|String|--|--
-file|当type为upload时必填|File|--|--
+src|当source为require时必填 本地图片 通过require引入|String|--|--
+url|当source为url时必填 线上图片链接|String|--|--
+file|当source为upload时必填|File|--|--
 scale|缩放，由于docx图片存在最大宽度，这里的scale是按照原有尺寸缩放|Number|0-1|1
 
 #### Array
